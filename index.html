@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>ANBU ❤️ NILA</title>
+
+<style>
+:root{
+  --pink:#ff6fae;
+  --violet:#7f5cff;
+  --glass:rgba(255,255,255,.08);
+}
+
+*{box-sizing:border-box}
+
+body{
+  margin:0;
+  height:100vh;
+  background:
+    radial-gradient(circle at 20% 10%, #2b145f, #07030f 60%),
+    radial-gradient(circle at 80% 90%, #0f2b3d, #07030f);
+  font-family:'Poppins',system-ui,sans-serif;
+  color:#f5f5f5;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  overflow:hidden;
+}
+
+/* 🌌 moving stars */
+.star{
+  position:absolute;
+  width:2px;height:2px;
+  background:white;
+  border-radius:50%;
+  opacity:.6;
+  animation: drift linear infinite;
+}
+@keyframes drift{
+  from{transform:translateY(0)}
+  to{transform:translateY(100vh)}
+}
+
+/* 💎 main card */
+.card{
+  width:480px;
+  padding:45px;
+  border-radius:30px;
+  background:var(--glass);
+  backdrop-filter: blur(22px);
+  box-shadow:
+    0 0 60px rgba(255,120,180,.25),
+    inset 0 0 40px rgba(255,255,255,.05);
+  text-align:center;
+  animation: reveal 1.8s ease;
+}
+@keyframes reveal{
+  from{opacity:0; transform:scale(.92) translateY(40px)}
+  to{opacity:1; transform:none}
+}
+
+h1{
+  margin:0;
+  font-size:32px;
+  letter-spacing:.5px;
+}
+.subtitle{
+  color:#ffb6d5;
+  margin-bottom:25px;
+}
+
+/* 💌 typing */
+#typing{
+  min-height:130px;
+  font-size:18px;
+  line-height:1.7;
+  color:#e5e5e5;
+}
+
+/* 📸 floating photos */
+.photos{
+  display:flex;
+  justify-content:center;
+  gap:18px;
+  margin:25px 0;
+}
+.photos img{
+  width:95px;
+  height:120px;
+  object-fit:cover;
+  border-radius:16px;
+  padding:6px;
+  background:white;
+  box-shadow:0 20px 40px rgba(0,0,0,.5);
+  animation: float 4s ease-in-out infinite;
+}
+.photos img:nth-child(2){animation-delay:1s}
+.photos img:nth-child(3){animation-delay:2s}
+@keyframes float{
+  0%,100%{transform:translateY(0)}
+  50%{transform:translateY(-12px)}
+}
+
+.question{
+  font-size:24px;
+  margin-bottom:20px;
+}
+
+/* 💖 buttons */
+.buttons{
+  position:relative;
+  height:70px;
+}
+button{
+  position:absolute;
+  padding:14px 30px;
+  font-size:17px;
+  border:none;
+  border-radius:999px;
+  cursor:pointer;
+  transition:.35s ease;
+}
+
+#yes{
+  left:50%;
+  transform:translateX(-50%);
+  background:linear-gradient(135deg,var(--pink),var(--violet));
+  color:white;
+  box-shadow:0 0 25px rgba(255,120,180,.7);
+}
+#yes:hover{
+  transform:translateX(-50%) scale(1.1);
+}
+
+#no{
+  left:10%;
+  background:#222;
+  color:#eee;
+}
+
+/* 😂 shake */
+@keyframes shake{
+  0%{transform:translate(0)}
+  25%{transform:translate(-5px,3px)}
+  50%{transform:translate(5px,-3px)}
+  75%{transform:translate(-5px,-3px)}
+  100%{transform:translate(0)}
+}
+
+canvas{
+  position:fixed;
+  inset:0;
+  pointer-events:none;
+}
+</style>
+</head>
+
+<body >
+
+<!-- 🎵 music -->
+<audio id="bgm" loop>
+  <source src="nila.mp3" type="audio/mpeg">
+</audio>
+
+<!-- 🌌 stars -->
+<script>
+for(let i=0;i<120;i++){
+  const s=document.createElement("div");
+  s.className="star";
+  s.style.left=Math.random()*100+"%";
+  s.style.top=Math.random()*100+"%";
+  s.style.animationDuration=5+Math.random()*10+"s";
+  document.body.appendChild(s);
+}
+</script>
+<div id="app">
+<div class="card">
+  <h1>ANBU❤️</h1>
+  <div class="subtitle">— KAVINILA</div>
+
+  <div id="typing"></div>
+
+  <div class="photos">
+    <img src="1.jpeg">
+    <img src="two.jpeg">
+    <img src="2.jpeg">
+  </div>
+
+  <div class="question">Will you be mine forever? 💍</div>
+
+  <div class="buttons">
+    <button id="yes" onclick="yes()">Yes 💖</button>
+    <button id="no" onmouseenter="escape()">No 😂</button>
+  </div>
+</div>
+</div>
+
+<canvas id="fx"></canvas>
+
+<script>
+/* 💌 typing */
+const text=`I met many people,
+but my heart chose you.`;
+
+let i=0, el=document.getElementById("typing");
+(function type(){
+  if(i<text.length){
+    el.innerHTML+=text[i]=="\n"?"<br>":text[i];
+    i++; setTimeout(type,42);
+  }
+})();
+
+/* 😂 no button */
+function escape(){
+  const n=document.getElementById("no");
+  n.style.animation="shake .4s";
+  n.innerText="😂😂";
+  n.style.left=Math.random()*70+"%";
+  setTimeout(()=>{
+    n.style.animation="";
+    n.innerText="No 😂";
+  },400);
+}
+
+/* 💖 effects */
+const c=document.getElementById("fx"),ctx=c.getContext("2d");
+c.width=innerWidth;c.height=innerHeight;
+let hearts=[];
+function yes(){
+
+  // ✅ PLAY MUSIC (USER GESTURE CONFIRMED)
+  const audio = document.getElementById("bgm");
+  audio.volume = 1;
+  audio.play().catch(e => console.log("Play blocked:", e));
+
+  // ✅ ONLY REPLACE APP CONTENT (NOT BODY)
+  document.getElementById("app").innerHTML = `
+    <div style="
+      height:100vh;
+      display:flex;
+      justify-content:center;
+      align-items:center;
+      background:radial-gradient(circle,#2b145f,#07030f);
+      color:#f5f5f5;
+      font-family:Poppins,sans-serif;
+      padding:40px;
+      text-align:center">
+      <div style="max-width:540px">
+        <h1>My Forever Letter 💌</h1>
+        <p style="font-size:19px;line-height:1.8;color:#e0e0e0">
+          From today, it’s us. Always. I choose you again and again.<br><br>
+          I choose you today, tomorrow, and always.<br><br>
+          Thank you for choosing me back.
+        </p>
+        <h2 style="color:#ffb6d5">— KAVINILA</h2>
+      </div>
+    </div>`;
+}
+
+  
+
+
+  for(let i=0;i<250;i++){
+    hearts.push({
+      x:Math.random()*c.width,
+      y:Math.random()*c.height,
+      s:Math.random()*8+6,
+      d:Math.random()*2+1
+    });
+  }
+  animate();
+
+function animate(){
+  ctx.clearRect(0,0,c.width,c.height);
+  hearts.forEach(h=>{
+    ctx.font=h.s+"px serif";
+    ctx.fillText("💖",h.x,h.y);
+    h.y+=h.d;
+    if(h.y>c.height)h.y=0;
+  });
+  requestAnimationFrame(animate);
+}
+</script>
+
+</body>
+</html>
